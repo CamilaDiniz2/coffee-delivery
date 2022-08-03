@@ -12,11 +12,13 @@ import { Minus, Plus, ShoppingCart } from 'phosphor-react'
 interface coffeePriceAndQuantityProps {
   price: number
   quantity: number
+  addCoffee: () => void
 }
 
 export function ButtonsAddMinusAndChart({
   price,
   quantity,
+  addCoffee,
 }: coffeePriceAndQuantityProps) {
   return (
     <ProductQuantityAndOrder>
@@ -25,7 +27,7 @@ export function ButtonsAddMinusAndChart({
         <span>{price}0</span>
       </ProductPrice>
       <ProductQuantity>
-        <ButtonMinus>
+        <ButtonMinus onClick={addCoffee}>
           <Minus size={16} weight="bold" />
         </ButtonMinus>
         <span>{quantity}</span>

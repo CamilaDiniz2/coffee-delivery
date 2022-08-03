@@ -1,9 +1,16 @@
 import { useState } from 'react'
+import { Minus, Plus, ShoppingCart } from 'phosphor-react'
 import {
   HomeProductItem,
   HomeProductsList,
   HomeProductsSection,
   ProductItemFeatures,
+  ProductPrice,
+  ProductQuantity,
+  ProductQuantityAndOrder,
+  ButtonMinus,
+  ButtonAddToAChart,
+  ButtonAdd,
 } from './styles'
 import expressoTradicional from '../../../../assets/coffees-list/expresso-tradicional.svg'
 import expressoAmericano from '../../../../assets/coffees-list/expresso-americano.svg'
@@ -19,10 +26,22 @@ import cubano from '../../../../assets/coffees-list/cubano.svg'
 import havaiano from '../../../../assets/coffees-list/havaiano.svg'
 import arabe from '../../../../assets/coffees-list/arabe.svg'
 import irlandes from '../../../../assets/coffees-list/irlandes.svg'
-import { ButtonsAddMinusAndChart } from './ButtonsAddMinusAndChart'
+// import { ButtonsAddMinusAndChart } from './ButtonsAddMinusAndChart'
+
+interface ProductsProps {
+  id: string
+  imgSrc: string
+  name: string
+  description: string
+  features: string[]
+  quantity: number
+  isAddToAChart: boolean
+}
+
+// const ProductsContext = createContext({})
 
 export function HomeProducts() {
-  const [listOfCoffees, setListOfCoffees] = useState([
+  const [listOfCoffees, setListOfCoffees] = useState<ProductsProps[]>([
     {
       id: 'expresso-tradicional',
       imgSrc: expressoTradicional,
@@ -30,7 +49,8 @@ export function HomeProducts() {
       description: 'O tradicional café feito com água quente e grãos moídos',
       features: ['tradicional'],
       price: 5.5,
-      quantity: 0,
+      quantity: 2,
+      isAddToAChart: false,
     },
     {
       id: 'expresso-americano',
@@ -40,6 +60,7 @@ export function HomeProducts() {
       features: ['tradicional'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'expresso-cremoso',
@@ -49,6 +70,7 @@ export function HomeProducts() {
       features: ['tradicional'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'expresso-gelado',
@@ -58,6 +80,7 @@ export function HomeProducts() {
       features: ['tradicional'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'cafe-com-leite',
@@ -67,6 +90,7 @@ export function HomeProducts() {
       features: ['tradicional', 'com leite'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'latte',
@@ -77,6 +101,7 @@ export function HomeProducts() {
       features: ['tradicional', 'com leite'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'capuccino',
@@ -87,6 +112,7 @@ export function HomeProducts() {
       features: ['tradicional', 'com leite'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'macchiato',
@@ -97,6 +123,7 @@ export function HomeProducts() {
       features: ['tradicional', 'com leite'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'mocaccino',
@@ -106,6 +133,7 @@ export function HomeProducts() {
       features: ['tradicional', 'com leite'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'chocolate-quente',
@@ -116,6 +144,7 @@ export function HomeProducts() {
       features: ['especial', 'com leite'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'cubano',
@@ -126,6 +155,7 @@ export function HomeProducts() {
       features: ['especial', 'alcoólico', 'gelado'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'havaiano',
@@ -135,6 +165,7 @@ export function HomeProducts() {
       features: ['especial'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'arabe',
@@ -144,6 +175,7 @@ export function HomeProducts() {
       features: ['especial'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
     {
       id: 'irlandes',
@@ -153,8 +185,33 @@ export function HomeProducts() {
       features: ['especial', 'alcoólico'],
       price: 9.9,
       quantity: 0,
+      isAddToAChart: false,
     },
   ])
+
+  // Diminui em uma unidade o tipo de café
+  function handleMinusOneCoffee(id: string) {
+    const newListOfCoffees = listOfCoffees.map((coffee) => {
+      if (coffee.id === id && coffee.quantity > 0) {
+        return { ...coffee, quantity: coffee.quantity - 1 }
+      } else {
+        return coffee
+      }
+    })
+    setListOfCoffees(newListOfCoffees)
+  }
+
+  // Aumenta em uma unidade o tipo de café
+  function handleAddOneCoffee(id: string) {
+    const newListOfCoffees = listOfCoffees.map((coffee) => {
+      if (coffee.id === id) {
+        return { ...coffee, quantity: coffee.quantity + 1 }
+      } else {
+        return coffee
+      }
+    })
+    setListOfCoffees(newListOfCoffees)
+  }
 
   return (
     <HomeProductsSection>
@@ -174,10 +231,36 @@ export function HomeProducts() {
               <strong>{coffee.name}</strong>
               <p>{coffee.description}</p>
 
-              <ButtonsAddMinusAndChart
+              {/* <ButtonsAddMinusAndChart
                 quantity={coffee.quantity}
                 price={coffee.price}
-              />
+                
+              /> */}
+
+              <ProductQuantityAndOrder>
+                <ProductPrice>
+                  R$
+                  <span>{coffee.price}0</span>
+                </ProductPrice>
+                <ProductQuantity>
+                  <ButtonMinus
+                    onClick={() => handleMinusOneCoffee(coffee.id)}
+                    type="button"
+                  >
+                    <Minus size={16} weight="bold" />
+                  </ButtonMinus>
+                  <span>{coffee.quantity}</span>
+                  <ButtonAdd
+                    onClick={() => handleAddOneCoffee(coffee.id)}
+                    type="button"
+                  >
+                    <Plus size={16} weight="bold" />
+                  </ButtonAdd>
+                </ProductQuantity>
+                <ButtonAddToAChart>
+                  <ShoppingCart size={20} weight="fill" />
+                </ButtonAddToAChart>
+              </ProductQuantityAndOrder>
             </HomeProductItem>
           )
         })}

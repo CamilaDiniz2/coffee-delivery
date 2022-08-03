@@ -9,7 +9,7 @@ export const CheckoutContainer = styled.div`
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 
-    @media (max-width: 768px) {
+    @media (max-width: 870px) {
       display: flex;
       flex-direction: column-reverse;
     }
@@ -60,6 +60,16 @@ export const FormContent = styled.div`
   flex-direction: column;
   gap: 1rem;
   flex: 1;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+
+    div {
+      display: flex;
+      flex-direction: column;
+    }
+  }
 
   input {
     background: ${(props) => props.theme['gray-200']};
