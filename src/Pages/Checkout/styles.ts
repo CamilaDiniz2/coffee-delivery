@@ -125,7 +125,7 @@ export const FormaOfPaymentMethods = styled.div`
 export const CoffeesSelected = styled.div`
   button {
     width: 100%;
-    margin-top: 16px;
+    margin-top: 12px;
     padding: 16px;
 
     border-radius: 6px;

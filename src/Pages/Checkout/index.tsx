@@ -16,7 +16,9 @@ import {
 import { MethodOfPayment } from './MethodOfPayment'
 import { CoffeeSelectedItem } from './CoffeeSelectedItem'
 import { TotalItemsSelectedInfo } from './TotalItemsSelectedInfo'
-import { Box, Alert, AlertTitle } from '@mui/material'
+import { Alert, AlertTitle } from '@mui/material'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
 
 interface MethodOfPaymentTypes {
   methodOfPaymentTypes: 'cartao-credito' | 'carta-debito' | 'dinheiro'
@@ -32,17 +34,35 @@ interface FormDataProps {
   complement?: string
 }
 
-export function Checkout() {
-  const [newMethodOfPayment, setNewMethodOfPayment] = useState('')
+interface CepFindApiProps {
+  bairro: string
+  cep: string
+  localidade: string
+  logradouro: string
+  uf: string
+}
 
-  const { register, handleSubmit, setValue, setFocus } = useForm()
-  // const [formValues, setFormValues] = useState({})
+const newFormCheckoutSchema = zod.object({
+  cep: zod.string().length(8, 'CEP deve ter 8 caracteres'),
+  number: zod.number().min(1, 'O número deve ser maior que 1'),
+  complement: zod.string().optional(),
+})
+
+export function Checkout() {
+  const { register, handleSubmit, setValue, setFocus } = useForm({
+    resolver: zodResolver(newFormCheckoutSchema),
+  })
+  const [newMethodOfPayment, setNewMethodOfPayment] = useState('')
   const [cepNotFound, setCepNotFound] = useState<boolean>(false)
   const [methodOfPaymentNotInformed, setMethodOfPaymentNotInformed] =
     useState(false)
 
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [numberFormatInvalid, setNumberFormatInvalid] = useState<boolean>(false)
+  const [cepApiData, setCepApiData] = useState<CepFindApiProps>([])
+  const [formData, setFormData] = useState<FormDataProps>([])
+
   function handleCEP(event: ChangeEvent<HTMLTextAreaElement>) {
-    console.log('aqui')
     const newCEP = event.target.value.replace(/\D/g, '')
     if (newCEP.length !== 8) {
       setCepNotFound(true)
@@ -51,6 +71,7 @@ export function Checkout() {
       setValue('neighborhood', '')
       setValue('city', '')
       setValue('uf', '')
+      setErrorMessage('O CEP deve conter 8 dígitos.')
     } else {
       fetch(`https://viacep.com.br/ws/${newCEP}/json/`)
         .then((response) => response.json())
@@ -62,15 +83,16 @@ export function Checkout() {
             setValue('neighborhood', '')
             setValue('city', '')
             setValue('uf', '')
+            setErrorMessage('O CEP não encontrado.')
             return
           }
-          console.log(data)
           setCepNotFound(false)
           setValue('street', data.logradouro)
           setValue('neighborhood', data.bairro)
           setValue('city', data.localidade)
           setValue('uf', data.uf)
           setFocus('number')
+          setCepApiData(data)
         })
     }
   }
@@ -83,20 +105,30 @@ export function Checkout() {
   function handleInformCompletAddress(form: FormDataProps) {
     if (newMethodOfPayment === '') {
       setMethodOfPaymentNotInformed(true)
-      return
     }
 
     const data = {
       cep: form.cep,
-      street: form.street,
-      neighborhood: form.neighborhood,
-      city: form.city,
-      uf: form.uf,
+      street: cepApiData.logradouro,
+      neighborhood: cepApiData.bairro,
+      city: cepApiData.localidade,
+      uf: cepApiData.uf,
       number: form.number,
       complement: form.complement,
       methodOfPayment: newMethodOfPayment,
     }
-    console.log(data)
+    setFormData(data)
+  }
+
+  console.log(formData)
+
+  function handleNumberInform(event: ChangeEvent<HTMLInputElement>) {
+    if (event.target.value < 0) {
+      setNumberFormatInvalid(true)
+      setFocus('number')
+    } else {
+      setNumberFormatInvalid(false)
+    }
   }
 
   return (
@@ -124,6 +156,7 @@ export function Checkout() {
               {cepNotFound && (
                 <Alert severity="error">
                   <AlertTitle>CEP não encontrado</AlertTitle>
+                  <strong>{errorMessage} </strong>
                   <strong>Por favor digite um CEP válido</strong>
                 </Alert>
               )}
@@ -170,8 +203,10 @@ export function Checkout() {
                   id="number"
                   placeholder="Numero"
                   {...register('number', { valueAsNumber: true })}
+                  onBlur={handleNumberInform}
                   required
                 />
+
                 <input
                   type="text"
                   id="complement"
@@ -179,6 +214,12 @@ export function Checkout() {
                   {...register('complement')}
                 />
               </FormNumberAndComplement>
+              {numberFormatInvalid && (
+                <Alert severity="error">
+                  <AlertTitle>Número não válido</AlertTitle>
+                  <strong>Você deve digitar um número maior que 0</strong>
+                </Alert>
+              )}
             </FormContent>
           </FormContainer>
           <PaymentMethod>
