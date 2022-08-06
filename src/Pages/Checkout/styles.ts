@@ -92,6 +92,10 @@ export const FormContent = styled.div`
       border-radius: 6px;
     }
   }
+
+  input[id='cep'] {
+    max-width: 12.5rem;
+  }
 `
 export const FormNumberAndComplement = styled.div`
   width: 100%;
@@ -110,18 +114,19 @@ export const FormaOfPaymentMethods = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 16px;
 
-  @media (max-width: 768px) {
+  /*  @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
     width: 100%;
-  }
+  } */
 `
 export const CoffeesSelected = styled.div`
   button {
     width: 100%;
-    margin-top: 12px;
-    padding: 12px;
+    margin-top: 16px;
+    padding: 16px;
 
     border-radius: 6px;
     border: 0;

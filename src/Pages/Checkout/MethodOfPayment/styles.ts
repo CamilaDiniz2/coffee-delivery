@@ -22,11 +22,11 @@ export const ButtonPaymentType = styled.button<ButtonPaymentProps>`
     isSelected ? theme['purple-600'] : theme['gray-300']};
 
   background-color: ${({ theme, isSelected }) =>
-    isSelected ? theme['purple-300'] : theme['gray-300']};
+    isSelected ? theme['purple-300'] : theme['gray-200']};
 
   @media (max-width: 768px) {
-    width: 80%;
-    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
   }
 
   &:hover {
