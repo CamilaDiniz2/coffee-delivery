@@ -1,16 +1,50 @@
+import { ChangeEvent, useState } from 'react'
 import { CurrencyDollar, MapPinLine } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import {
   CheckoutContainer,
+  CoffeesSelected,
   CoffeesSelectedContainer,
   FormContainer,
   BaseBoxTitle,
+  FormNumberAndComplement,
   PaymentMethod,
   FormContent,
+  FormSelectCityAndState,
+  FormaOfPaymentMethods,
 } from './styles'
+import { MethodOfPayment } from './MethodOfPayment'
+import { CoffeeSelectedItem } from './CoffeeSelectedItem'
+import { TotalItemsSelectedInfo } from './TotalItemsSelectedInfo'
 
 export function Checkout() {
-  const { register, handleSubmit } = useForm()
+  const [methodOfPayment, setMethodOfPayment] = useState('')
+  const { register, setValue, setFocus } = useForm()
+  // const [formValues, setFormValues] = useState({})
+
+  function handleSelectMehodOfPayment(
+    type: 'cartao-credito' | 'cartao-debito' | 'dinheiro',
+  ) {
+    setMethodOfPayment(type)
+  }
+
+  function handleCEP(event: ChangeEvent<HTMLTextAreaElement>) {
+    const newCEP = event.target.value.replace(/\D/g, '')
+    fetch(`https://viacep.com.br/ws/${newCEP}/json/`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        setValue('street', data.logradouro)
+        setValue('neighborhood', data.bairro)
+        setValue('city', data.localidade)
+        setValue('uf', data.uf)
+        setFocus('number')
+      })
+      .catch((error) => {
+        Alert.alert('CEP incorretp', error)
+      })
+  }
+
   return (
     <CheckoutContainer>
       <form action="">
@@ -30,47 +64,61 @@ export function Checkout() {
                 id="cep"
                 placeholder="CEP"
                 {...register('cep')}
+                onBlur={handleCEP}
               />
               <input
                 type="text"
-                id="rua"
+                id="street"
                 placeholder="Rua"
-                {...register('rua')}
+                {...register('street')}
+                disabled
+                required
               />
-              <div>
-                <input
-                  type="number"
-                  id="numero"
-                  placeholder="Numero"
-                  {...register('numero')}
-                />
+
+              <FormSelectCityAndState>
                 <input
                   type="text"
-                  id="complemento"
-                  placeholder="Complemento (opcional)"
-                  {...register('complemento')}
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  id="bairro"
+                  id="neighborhood"
                   placeholder="Bairro"
-                  {...register('bairro')}
+                  {...register('neighborhood')}
+                  disabled
+                  required
                 />
+
                 <input
                   type="text"
-                  id="cidade"
+                  id="city"
                   placeholder="Cidade"
-                  {...register('cidade')}
+                  {...register('city')}
+                  disabled
+                  required
                 />
+
                 <input
                   type="text"
                   id="uf"
                   placeholder="UF"
                   {...register('uf')}
+                  disabled
+                  required
                 />
-              </div>
+              </FormSelectCityAndState>
+
+              <FormNumberAndComplement>
+                <input
+                  type="number"
+                  id="number"
+                  placeholder="Numero"
+                  {...register('number')}
+                  required
+                />
+                <input
+                  type="text"
+                  id="complement"
+                  placeholder="Complemento (opcional)"
+                  {...register('complement')}
+                />
+              </FormNumberAndComplement>
             </FormContent>
           </FormContainer>
           <PaymentMethod>
@@ -84,14 +132,38 @@ export function Checkout() {
                 </p>
               </div>
             </BaseBoxTitle>
-            <div></div>
+            <FormaOfPaymentMethods>
+              <MethodOfPayment
+                title="cartão de crédito"
+                type="cartao-credito"
+                onClick={() => handleSelectMehodOfPayment('cartao-credito')}
+                isSelected={methodOfPayment === 'cartao-credito'}
+              />
+              <MethodOfPayment
+                title="cartão de débito"
+                type="cartao-debito"
+                onClick={() => handleSelectMehodOfPayment('cartao-debito')}
+                isSelected={methodOfPayment === 'cartao-debito'}
+              />
+              <MethodOfPayment
+                title="dinheiro"
+                type="dinheiro"
+                onClick={() => handleSelectMehodOfPayment('dinheiro')}
+                isSelected={methodOfPayment === 'dinheiro'}
+              />
+            </FormaOfPaymentMethods>
           </PaymentMethod>
         </div>
 
-        <div>
+        <CoffeesSelected>
           <h1>Cafés selecionados</h1>
-          <CoffeesSelectedContainer></CoffeesSelectedContainer>
-        </div>
+          <CoffeesSelectedContainer>
+            <CoffeeSelectedItem />
+            <CoffeeSelectedItem />
+            <TotalItemsSelectedInfo />
+            <button type="submit">confirmar pedido</button>
+          </CoffeesSelectedContainer>
+        </CoffeesSelected>
       </form>
     </CheckoutContainer>
   )

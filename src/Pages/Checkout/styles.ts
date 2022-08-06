@@ -9,9 +9,9 @@ export const CheckoutContainer = styled.div`
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 
-    @media (max-width: 870px) {
+    @media (max-width: 1024px) {
       display: flex;
-      flex-direction: column-reverse;
+      flex-direction: column;
     }
 
     h1 {
@@ -43,6 +43,7 @@ export const BaseBoxTitle = styled.div`
   justify-content: flex-start;
   gap: 0.5rem;
   margin-bottom: 2rem;
+
   strong {
     line-height: 130%;
     font-weight: 400;
@@ -72,13 +73,66 @@ export const FormContent = styled.div`
   }
 
   input {
-    background: ${(props) => props.theme['gray-200']};
+    background-color: ${({ theme }) => theme['gray-200']};
     border: 0;
-    padding: 0.75rem;
-  }
+    padding: 12px;
+    font-size: 0.875rem;
+    color: ${({ theme }) => theme['gray-700']};
 
-  div {
+    &:disabled {
+      background-color: ${({ theme }) => theme['gray-300']};
+    }
+
+    &::placeholder {
+      color: ${({ theme }) => theme['gray-500']};
+    }
+
+    &:focus {
+      border: 1px solid ${({ theme }) => theme['yellow-600']};
+      border-radius: 6px;
+    }
+  }
+`
+export const FormNumberAndComplement = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 12.5rem 1fr;
+  gap: 8px;
+`
+
+export const FormSelectCityAndState = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 12.5rem 1fr 4rem;
+  gap: 12px;
+`
+export const FormaOfPaymentMethods = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (max-width: 768px) {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    width: 100%;
+  }
+`
+export const CoffeesSelected = styled.div`
+  button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+
+    border-radius: 6px;
+    border: 0;
+    background-color: ${({ theme }) => theme['yellow-600']};
+    color: ${({ theme }) => theme.white};
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    &:hover {
+      background-color: ${({ theme }) => theme['yellow-900']};
+    }
   }
 `

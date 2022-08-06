@@ -1,5 +1,46 @@
 import styled from 'styled-components'
 
+interface ButtonPaymentProps {
+  isSelected: boolean
+}
+
+export const ButtonPaymentType = styled.button<ButtonPaymentProps>`
+  width: 32%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  align-items: center;
+  padding: 16px 8px;
+  line-height: 0;
+
+  border-radius: 6px;
+  border: 0;
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${({ theme, isSelected }) =>
+    isSelected ? theme['purple-600'] : theme['gray-300']};
+
+  background-color: ${({ theme, isSelected }) =>
+    isSelected ? theme['purple-300'] : theme['gray-300']};
+
+  @media (max-width: 768px) {
+    width: 80%;
+    margin-bottom: 8px;
+  }
+
+  &:hover {
+    background-color: ${(props) => props.theme['gray-400']};
+  }
+
+  span {
+    color: ${(props) => props.theme['gray-600']};
+    text-transform: uppercase;
+    font-size: 0.6rem;
+    font-weight: bold;
+  }
+`
+
 export const CoffeesSelectedContainer = styled.div`
   display: flex;
   flex-direction: column;

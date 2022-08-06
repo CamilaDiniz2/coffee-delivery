@@ -35,6 +35,7 @@ interface ProductsProps {
   description: string
   features: string[]
   quantity: number
+  price: number
   isAddToAChart: boolean
 }
 
@@ -49,7 +50,7 @@ export function HomeProducts() {
       description: 'O tradicional café feito com água quente e grãos moídos',
       features: ['tradicional'],
       price: 5.5,
-      quantity: 2,
+      quantity: 0,
       isAddToAChart: false,
     },
     {
@@ -191,26 +192,37 @@ export function HomeProducts() {
 
   // Diminui em uma unidade o tipo de café
   function handleMinusOneCoffee(id: string) {
-    const newListOfCoffees = listOfCoffees.map((coffee) => {
+    const newListOfCoffeesMinusOne = listOfCoffees.map((coffee) => {
       if (coffee.id === id && coffee.quantity > 0) {
         return { ...coffee, quantity: coffee.quantity - 1 }
       } else {
         return coffee
       }
     })
-    setListOfCoffees(newListOfCoffees)
+    setListOfCoffees(newListOfCoffeesMinusOne)
   }
 
   // Aumenta em uma unidade o tipo de café
   function handleAddOneCoffee(id: string) {
-    const newListOfCoffees = listOfCoffees.map((coffee) => {
+    const newListOfCoffeesPlusOne = listOfCoffees.map((coffee) => {
       if (coffee.id === id) {
         return { ...coffee, quantity: coffee.quantity + 1 }
       } else {
         return coffee
       }
     })
-    setListOfCoffees(newListOfCoffees)
+    setListOfCoffees(newListOfCoffeesPlusOne)
+  }
+
+  function handleAddItemToAChart(id: string) {
+    const newListOfCoffeesAddToAChart = listOfCoffees.map((coffee) => {
+      if (coffee.id === id) {
+        return { ...coffee, isAddToAChart: true }
+      } else {
+        return coffee
+      }
+    })
+    setListOfCoffees(newListOfCoffeesAddToAChart)
   }
 
   return (
@@ -230,12 +242,6 @@ export function HomeProducts() {
 
               <strong>{coffee.name}</strong>
               <p>{coffee.description}</p>
-
-              {/* <ButtonsAddMinusAndChart
-                quantity={coffee.quantity}
-                price={coffee.price}
-                
-              /> */}
 
               <ProductQuantityAndOrder>
                 <ProductPrice>
@@ -257,7 +263,10 @@ export function HomeProducts() {
                     <Plus size={16} weight="bold" />
                   </ButtonAdd>
                 </ProductQuantity>
-                <ButtonAddToAChart>
+                <ButtonAddToAChart
+                  onClick={() => handleAddItemToAChart(coffee.id)}
+                  type="button"
+                >
                   <ShoppingCart size={20} weight="fill" />
                 </ButtonAddToAChart>
               </ProductQuantityAndOrder>
