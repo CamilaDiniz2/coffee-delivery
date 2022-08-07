@@ -9,7 +9,7 @@ export const CheckoutContainer = styled.div`
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 
-    @media (max-width: 1024px) {
+    @media (max-width: 968px) {
       display: flex;
       flex-direction: column;
     }
@@ -125,6 +125,7 @@ export const FormaOfPaymentMethods = styled.div`
 export const CoffeesSelected = styled.div`
   button {
     width: 100%;
+    max-width: 368px;
     margin-top: 12px;
     padding: 16px;
 
@@ -135,6 +136,11 @@ export const CoffeesSelected = styled.div`
     font-size: 0.875rem;
     text-transform: uppercase;
     cursor: pointer;
+
+    @media (max-width: 968px) {
+      margin: 0 auto;
+      padding: 18px;
+    }
 
     &:hover {
       background-color: ${({ theme }) => theme['yellow-900']};

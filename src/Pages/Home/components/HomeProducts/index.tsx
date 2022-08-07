@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Minus, Plus, ShoppingCart } from 'phosphor-react'
 import {
   HomeProductItem,
@@ -26,7 +26,6 @@ import cubano from '../../../../assets/coffees-list/cubano.svg'
 import havaiano from '../../../../assets/coffees-list/havaiano.svg'
 import arabe from '../../../../assets/coffees-list/arabe.svg'
 import irlandes from '../../../../assets/coffees-list/irlandes.svg'
-// import { ButtonsAddMinusAndChart } from './ButtonsAddMinusAndChart'
 
 interface ProductsProps {
   id: string
@@ -37,9 +36,8 @@ interface ProductsProps {
   quantity: number
   price: number
   isAddToAChart: boolean
+  totalPrice: number
 }
-
-// const ProductsContext = createContext({})
 
 export function HomeProducts() {
   const [listOfCoffees, setListOfCoffees] = useState<ProductsProps[]>([
@@ -52,6 +50,7 @@ export function HomeProducts() {
       price: 5.5,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'expresso-americano',
@@ -62,6 +61,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'expresso-cremoso',
@@ -72,6 +72,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'expresso-gelado',
@@ -82,6 +83,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'cafe-com-leite',
@@ -92,6 +94,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'latte',
@@ -103,6 +106,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'capuccino',
@@ -114,6 +118,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'macchiato',
@@ -125,6 +130,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'mocaccino',
@@ -135,6 +141,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'chocolate-quente',
@@ -146,6 +153,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'cubano',
@@ -157,6 +165,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'havaiano',
@@ -167,6 +176,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'arabe',
@@ -177,6 +187,7 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
     {
       id: 'irlandes',
@@ -187,14 +198,26 @@ export function HomeProducts() {
       price: 9.9,
       quantity: 0,
       isAddToAChart: false,
+      totalPrice: 0,
     },
   ])
+
+  const [coffeesAddedToAChart, setCoffeesAddedToAChart] =
+    useState<ProductsProps>([])
+
+  const [totalPriceOfCoffees, setTotalPriceOfCoffees] = useState<number>(0)
+  const [totalItemsAdded, setTotalItemsAdded] = useState<number>(0)
+  const [itemAddedChart, setItemAddedChart] = useState<number>(0)
 
   // Diminui em uma unidade o tipo de café
   function handleMinusOneCoffee(id: string) {
     const newListOfCoffeesMinusOne = listOfCoffees.map((coffee) => {
       if (coffee.id === id && coffee.quantity > 0) {
-        return { ...coffee, quantity: coffee.quantity - 1 }
+        return {
+          ...coffee,
+          quantity: coffee.quantity - 1,
+          totalPrice: coffee.quantity * coffee.price,
+        }
       } else {
         return coffee
       }
@@ -206,7 +229,11 @@ export function HomeProducts() {
   function handleAddOneCoffee(id: string) {
     const newListOfCoffeesPlusOne = listOfCoffees.map((coffee) => {
       if (coffee.id === id) {
-        return { ...coffee, quantity: coffee.quantity + 1 }
+        return {
+          ...coffee,
+          quantity: coffee.quantity + 1,
+          totalPrice: coffee.quantity * coffee.price,
+        }
       } else {
         return coffee
       }
@@ -214,16 +241,49 @@ export function HomeProducts() {
     setListOfCoffees(newListOfCoffeesPlusOne)
   }
 
+  // adiciona item ao carrinho
   function handleAddItemToAChart(id: string) {
+    setItemAddedChart(itemAddedChart + 1)
     const newListOfCoffeesAddToAChart = listOfCoffees.map((coffee) => {
-      if (coffee.id === id) {
-        return { ...coffee, isAddToAChart: true }
+      if (coffee.id === id && coffee.quantity > 0) {
+        return {
+          ...coffee,
+          isAddToAChart: true,
+          totalPrice: coffee.quantity * coffee.price,
+        }
       } else {
         return coffee
       }
     })
     setListOfCoffees(newListOfCoffeesAddToAChart)
   }
+
+  useEffect(() => {
+    const newListOfCoffeesAddToAChart = listOfCoffees.filter(
+      (coffee) => coffee.isAddToAChart === true && coffee.quantity > 0,
+    )
+
+    setCoffeesAddedToAChart(newListOfCoffeesAddToAChart)
+  }, [itemAddedChart])
+
+  useEffect(() => {
+    const totalPriceOfCoffees = coffeesAddedToAChart.reduce((soma, atual) => {
+      return soma + atual.totalPrice
+    }, 0)
+
+    const totalItems = coffeesAddedToAChart.reduce((soma, atual) => {
+      return soma + atual.quantity
+    }, 0)
+
+    setTotalPriceOfCoffees(totalPriceOfCoffees)
+    setTotalItemsAdded(totalItems)
+  }, [itemAddedChart, coffeesAddedToAChart])
+
+  /* interface CoffeesAddedContextType {
+    coffeeAddedList: FormDataProps
+  }
+
+  const CoffeesAddedContext = createContext({} as FormDataContextType) */
 
   return (
     <HomeProductsSection>
@@ -274,6 +334,8 @@ export function HomeProducts() {
           )
         })}
       </HomeProductsList>
+      <div>{totalPriceOfCoffees}</div>
+      <div>{totalItemsAdded}</div>
     </HomeProductsSection>
   )
 }

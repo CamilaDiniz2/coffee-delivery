@@ -7,6 +7,7 @@ export const Container = styled.div`
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid ${({ theme }) => theme['gray-300']};
+  gap: 8px;
 
   img {
     width: 4rem;

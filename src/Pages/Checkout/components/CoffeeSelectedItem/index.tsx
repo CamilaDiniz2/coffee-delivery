@@ -1,6 +1,6 @@
 import { Container, CoffeeInfo } from './styles'
 
-import chocolateQuente from '../../../assets/coffees-list/chocolate-quente.svg'
+import chocolateQuente from '../../../../assets/coffees-list/chocolate-quente.svg'
 
 export function CoffeeSelectedItem() {
   return (

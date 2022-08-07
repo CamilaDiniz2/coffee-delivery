@@ -13,9 +13,9 @@ import {
   FormSelectCityAndState,
   FormaOfPaymentMethods,
 } from './styles'
-import { MethodOfPayment } from './MethodOfPayment'
-import { CoffeeSelectedItem } from './CoffeeSelectedItem'
-import { TotalItemsSelectedInfo } from './TotalItemsSelectedInfo'
+import { MethodOfPayment } from './components/MethodOfPayment'
+import { CoffeeSelectedItem } from './components/CoffeeSelectedItem'
+import { TotalItemsSelectedInfo } from './components/TotalItemsSelectedInfo'
 import { Alert, AlertTitle } from '@mui/material'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
@@ -47,6 +47,12 @@ const newFormCheckoutSchema = zod.object({
   number: zod.number().min(1, 'O número deve ser maior que 1'),
   complement: zod.string().optional(),
 })
+
+/* interface FormDataContextType {
+  formData: FormDataProps 
+} */
+
+// const FormDataContext = createContext({} as FormDataContextType)
 
 export function Checkout() {
   const { register, handleSubmit, setValue, setFocus } = useForm({
@@ -269,6 +275,7 @@ export function Checkout() {
           <CoffeesSelectedContainer>
             <CoffeeSelectedItem />
             <CoffeeSelectedItem />
+
             <TotalItemsSelectedInfo />
             <button type="submit">confirmar pedido</button>
           </CoffeesSelectedContainer>
