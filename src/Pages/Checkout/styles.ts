@@ -34,7 +34,9 @@ const BaseContainer = styled.div`
 `
 export const FormContainer = styled(BaseContainer)``
 
-export const CoffeesSelectedContainer = styled(BaseContainer)``
+export const CoffeesSelectedContainer = styled(BaseContainer)`
+  padding: 2.5rem 1.5rem;
+`
 
 export const PaymentMethod = styled(BaseContainer)``
 
@@ -115,35 +117,33 @@ export const FormaOfPaymentMethods = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
-
-  /*  @media (max-width: 768px) {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  } */
 `
-export const CoffeesSelected = styled.div`
-  button {
-    width: 100%;
-    max-width: 368px;
-    margin-top: 12px;
-    padding: 16px;
+export const CoffeesSelected = styled.div``
 
-    border-radius: 6px;
-    border: 0;
-    background-color: ${({ theme }) => theme['yellow-600']};
-    color: ${({ theme }) => theme.white};
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    cursor: pointer;
+export const ButtonConfirm = styled.button`
+  width: 100%;
+  max-width: 368px;
+  margin-top: 12px;
+  padding: 16px;
 
-    @media (max-width: 968px) {
-      margin: 0 auto;
-      padding: 18px;
-    }
+  border-radius: 6px;
+  border: 0;
+  background-color: ${({ theme }) => theme['yellow-600']};
+  color: ${({ theme }) => theme.white};
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  cursor: pointer;
 
-    &:hover {
-      background-color: ${({ theme }) => theme['yellow-900']};
-    }
+  @media (max-width: 968px) {
+    margin: 0 auto;
+    padding: 18px;
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme['yellow-900']};
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme['yellow-300']};
   }
 `

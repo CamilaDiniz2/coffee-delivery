@@ -1,11 +1,15 @@
+import { useContext } from 'react'
 import { Container } from './styles'
+import { CoffeesAddedContext } from '../../../../contexts/CoffeesAddedContext'
 
 export function TotalItemsSelectedInfo() {
+  const { totalPriceOfCoffees } = useContext(CoffeesAddedContext)
+
   return (
     <Container>
       <div>
         <span>Total de itens</span>
-        <p>R$ 29,70</p>
+        <p>R$ {totalPriceOfCoffees.toFixed(2)}</p>
       </div>
       <div>
         <span>Entrega</span>
@@ -13,7 +17,7 @@ export function TotalItemsSelectedInfo() {
       </div>
       <div>
         <strong>Total</strong>
-        <strong>R$ 33,20</strong>
+        <strong>R$ {totalPriceOfCoffees.toFixed(2)}</strong>
       </div>
     </Container>
   )

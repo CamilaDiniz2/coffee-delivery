@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import {
   SuccessDeliveryContainer,
   SuccessDeliveryInfo,
@@ -18,10 +19,12 @@ export function Success() {
             <SuccessIcons successIconsBackgroundColors="purpleDark">
               <MapPinLine size={16} weight="fill" />
             </SuccessIcons>
-            <strong>
-              Entrega em Rua João Daniel Martinelli, 102 Farrapos - Porto
-              Alegre, RS
-            </strong>
+            {/* {formData !== undefined && (
+              <strong>
+                Entrega em {formData.street}, {formData.number}{' '}
+                {formData.neighborhood} - {formData.city}, {formData.uf}
+              </strong>
+            )} */}
           </div>
           <div>
             <SuccessIcons successIconsBackgroundColors="yellow">

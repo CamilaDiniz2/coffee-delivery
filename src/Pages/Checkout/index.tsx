@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useContext, useState, createContext } from 'react'
 import { CurrencyDollar, MapPinLine } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import {
@@ -12,6 +12,7 @@ import {
   FormContent,
   FormSelectCityAndState,
   FormaOfPaymentMethods,
+  ButtonConfirm,
 } from './styles'
 import { MethodOfPayment } from './components/MethodOfPayment'
 import { CoffeeSelectedItem } from './components/CoffeeSelectedItem'
@@ -19,6 +20,14 @@ import { TotalItemsSelectedInfo } from './components/TotalItemsSelectedInfo'
 import { Alert, AlertTitle } from '@mui/material'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+import { CoffeesAddedContext } from '../../contexts/CoffeesAddedContext'
+import { Redirect } from 'react-router-dom'
+
+const newFormCheckoutSchema = zod.object({
+  cep: zod.string().length(8, 'CEP deve ter 8 caracteres'),
+  number: zod.number().min(1, 'O número deve ser maior que 1'),
+  complement: zod.string().optional(),
+})
 
 interface MethodOfPaymentTypes {
   methodOfPaymentTypes: 'cartao-credito' | 'carta-debito' | 'dinheiro'
@@ -42,24 +51,20 @@ interface CepFindApiProps {
   uf: string
 }
 
-const newFormCheckoutSchema = zod.object({
-  cep: zod.string().length(8, 'CEP deve ter 8 caracteres'),
-  number: zod.number().min(1, 'O número deve ser maior que 1'),
-  complement: zod.string().optional(),
-})
-
 /* interface FormDataContextType {
-  formData: FormDataProps 
-} */
+  formData: FormDataProps
+}
 
-// const FormDataContext = createContext({} as FormDataContextType)
+export const FormDataContext = createContext({} as FormDataContextType) */
 
 export function Checkout() {
-  const { register, handleSubmit, setValue, setFocus } = useForm({
+  const { coffeesAddedToAChart } = useContext(CoffeesAddedContext)
+  const { register, handleSubmit, setFocus, setValue } = useForm({
     resolver: zodResolver(newFormCheckoutSchema),
   })
+
   const [newMethodOfPayment, setNewMethodOfPayment] = useState('')
-  const [cepNotFound, setCepNotFound] = useState<boolean>(false)
+  const [isCepNotFound, setIsCepNotFound] = useState<boolean>(false)
   const [methodOfPaymentNotInformed, setMethodOfPaymentNotInformed] =
     useState(false)
 
@@ -71,7 +76,7 @@ export function Checkout() {
   function handleCEP(event: ChangeEvent<HTMLTextAreaElement>) {
     const newCEP = event.target.value.replace(/\D/g, '')
     if (newCEP.length !== 8) {
-      setCepNotFound(true)
+      setIsCepNotFound(true)
       setFocus('cep')
       setValue('street', '')
       setValue('neighborhood', '')
@@ -83,7 +88,7 @@ export function Checkout() {
         .then((response) => response.json())
         .then((data) => {
           if (data.cep === undefined) {
-            setCepNotFound(true)
+            setIsCepNotFound(true)
             setFocus('cep')
             setValue('street', '')
             setValue('neighborhood', '')
@@ -92,7 +97,7 @@ export function Checkout() {
             setErrorMessage('O CEP não encontrado.')
             return
           }
-          setCepNotFound(false)
+          setIsCepNotFound(false)
           setValue('street', data.logradouro)
           setValue('neighborhood', data.bairro)
           setValue('city', data.localidade)
@@ -126,8 +131,6 @@ export function Checkout() {
     setFormData(data)
   }
 
-  console.log(formData)
-
   function handleNumberInform(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.value < 0) {
       setNumberFormatInvalid(true)
@@ -137,6 +140,7 @@ export function Checkout() {
     }
   }
 
+  console.log(formData)
   return (
     <CheckoutContainer>
       <form onSubmit={handleSubmit(handleInformCompletAddress)} action="">
@@ -157,9 +161,10 @@ export function Checkout() {
                 placeholder="CEP"
                 {...register('cep')}
                 onBlur={handleCEP}
+                required
               />
 
-              {cepNotFound && (
+              {isCepNotFound && (
                 <Alert severity="error">
                   <AlertTitle>CEP não encontrado</AlertTitle>
                   <strong>{errorMessage} </strong>
@@ -273,11 +278,21 @@ export function Checkout() {
         <CoffeesSelected>
           <h1>Cafés selecionados</h1>
           <CoffeesSelectedContainer>
-            <CoffeeSelectedItem />
-            <CoffeeSelectedItem />
+            {coffeesAddedToAChart.map((coffee) => {
+              return (
+                <CoffeeSelectedItem
+                  key={coffee.id}
+                  name={coffee.name}
+                  quantity={coffee.quantity}
+                  price={coffee.price}
+                  imgScr={coffee.imgSrc}
+                />
+              )
+            })}
 
             <TotalItemsSelectedInfo />
-            <button type="submit">confirmar pedido</button>
+
+            <ButtonConfirm type="submit">confirmar pedido</ButtonConfirm>
           </CoffeesSelectedContainer>
         </CoffeesSelected>
       </form>

@@ -25,7 +25,7 @@ export const HeaderContainer = styled.header`
       gap: 0.25rem;
       border-radius: 8px;
       text-decoration: none;
-      padding: 1rem 0.5rem;
+      padding: 8px;
 
       &:first-child {
         background: ${(props) => props.theme['purple-300']};
@@ -42,9 +42,14 @@ export const HeaderContainer = styled.header`
         span {
           background: ${(props) => props.theme['yellow-900']};
           color: ${(props) => props.theme['gray-100']};
+          font-size: 0.75rem;
 
           border-radius: 50%;
-          padding: 0.1rem 0.3rem;
+          padding: 0.15rem 0.3rem;
+
+          position: absolute;
+          margin-top: -2.25rem;
+          margin-left: 2.25rem;
         }
       }
     }

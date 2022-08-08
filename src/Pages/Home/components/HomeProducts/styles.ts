@@ -47,11 +47,12 @@ export const HomeProductItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 22rem;
+  justify-content: space-between;
+  max-width: 24rem;
 
   background: ${(props) => props.theme['gray-100']};
   gap: 1rem;
-  padding: 0.5rem;
+  padding: 1rem;
 
   img {
     width: 7rem;
@@ -71,6 +72,7 @@ export const HomeProductItem = styled.div`
     line-height: 130%;
     font-size: 0.875rem;
     height: 3rem;
+    text-align: center;
   }
 `
 

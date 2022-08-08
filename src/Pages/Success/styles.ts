@@ -16,12 +16,8 @@ export const SuccessDeliveryContainer = styled.div`
     font-size: 2rem;
     line-height: 130%;
 
-    @media (max-width: 768px) {
-      font-size: 1.5rem;
-    }
-
-    @media (max-width: 400px) {
-      font-size: 1.25rem;
+    @media (max-width: 912px) {
+      text-align: center;
     }
   }
 
@@ -34,10 +30,11 @@ export const SuccessDeliveryContainer = styled.div`
     @media (max-width: 768px) {
       font-size: 1rem;
       margin-bottom: 1.5rem;
+      text-align: center;
     }
 
-    @media (max-width: 400px) {
-      font-size: 0.875rem;
+    @media (max-width: 912px) {
+      text-align: center;
     }
   }
 `

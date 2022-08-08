@@ -34,7 +34,7 @@ export const HomeSectionContent = styled.div`
     font-size: 1.25rem;
     line-height: 130%;
     color: ${(props) => props.theme['gray-700']};
-    margin-bottom: 3.75rem;
+    margin-bottom: 3.5rem;
   }
 
   @media (max-width: 768px) {
@@ -62,15 +62,16 @@ export const HomeSectionContentItems = styled.div`
   }
 
   @media (max-width: 512px) {
-    display:flex;
+    display: flex;
     flex-direction: column;
     justify-content: center;
-  
+
     gap: 0.75rem;
 
     div {
       font-size: 0.75rem;
     }
+  }
 `
 
 const HOME_ICONS_BACKGROUND_COLORS = {
