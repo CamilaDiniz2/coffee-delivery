@@ -17,7 +17,7 @@ export function TotalItemsSelectedInfo() {
       </div>
       <div>
         <strong>Total</strong>
-        <strong>R$ {totalPriceOfCoffees.toFixed(2)}</strong>
+        <strong>R$ {(totalPriceOfCoffees + 3.5).toFixed(2)}</strong>
       </div>
     </Container>
   )

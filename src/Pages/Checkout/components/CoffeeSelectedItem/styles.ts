@@ -9,6 +9,10 @@ export const Container = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme['gray-300']};
   gap: 8px;
 
+  @media (max-width: 1024px) {
+    gap: 2rem;
+  }
+
   img {
     width: 4rem;
     height: 4rem;
@@ -23,6 +27,11 @@ export const CoffeeInfo = styled.div`
     color: ${({ theme }) => theme['gray-700']};
     font-weight: normal;
     margin-bottom: 8px;
+
+    @media (max-width: 1024px) {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
   }
 `
 export const CoffeeQuantityAndRemove = styled.div`
@@ -37,6 +46,12 @@ export const ProductQuantity = styled.div`
   justify-content: space-between;
   background-color: ${({ theme }) => theme['gray-300']};
   border-radius: 8px;
+
+  span {
+    padding: 0 6px;
+    font-size: 0.875rem;
+    color: ${({ theme }) => theme['gray-800']};
+  }
 `
 
 export const baseButton = styled.button`
@@ -52,6 +67,11 @@ export const baseButton = styled.button`
     color: ${({ theme }) => theme['purple-900']};
     background-color: ${({ theme }) => theme['gray-400']};
   }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme['gray-400']};
+    cursor: not-allowed;
+  }
 `
 
 export const ButtonAddOrSubtractItem = styled(baseButton)``
@@ -61,10 +81,13 @@ export const RemoveItem = styled(baseButton)`
   justify-content: center;
 
   gap: 4px;
+`
+export const TotalPrice = styled.strong`
+  text-transform: uppercase;
+  color: ${({ theme }) => theme['gray-600']};
+  font-size: 0.75rem;
 
-  span {
-    text-transform: uppercase;
-    color: ${({ theme }) => theme['gray-600']};
-    font-size: 0.75rem;
+  @media (max-width: 1024px) {
+    font-size: 1.25rem;
   }
 `

@@ -35,6 +35,9 @@ interface CoffeesAddedContextType {
   handleMinusOneCoffee: (id: string) => void
   handleAddOneCoffee: (id: string) => void
   handleAddItemToAChart: (id: string) => void
+  handleAddACoffeeInCheckoutpage: (id: string) => void
+  handleSubtractACoffeeInCheckoutpage: (id: string) => void
+  removeACoffeInCheckoutPage: (id: string) => void
 }
 
 export const CoffeesAddedContext = createContext({} as CoffeesAddedContextType)
@@ -248,6 +251,43 @@ export function CoffesAddedContextProvider({
     setListOfCoffees(newListOfCoffeesPlusOne)
   }
 
+  function handleAddACoffeeInCheckoutpage(id: string) {
+    const newListOfCoffees = coffeesAddedToAChart.map((coffee) => {
+      if (coffee.id === id) {
+        return {
+          ...coffee,
+          quantity: coffee.quantity + 1,
+        }
+      } else {
+        return coffee
+      }
+    })
+    setCoffeesAddedToAChart(newListOfCoffees)
+  }
+
+  console.log(coffeesAddedToAChart)
+
+  function handleSubtractACoffeeInCheckoutpage(id: string) {
+    const newListOfCoffees = coffeesAddedToAChart.map((coffee) => {
+      if (coffee.id === id && coffee.quantity > 1) {
+        return {
+          ...coffee,
+          quantity: coffee.quantity - 1,
+        }
+      } else {
+        return coffee
+      }
+    })
+    setCoffeesAddedToAChart(newListOfCoffees)
+  }
+
+  function removeACoffeInCheckoutPage(id: string) {
+    const newListOfCoffees = coffeesAddedToAChart.filter(
+      (coffee) => coffee.id !== id,
+    )
+    setCoffeesAddedToAChart(newListOfCoffees)
+  }
+
   // adiciona item ao carrinho
   function handleAddItemToAChart(id: string) {
     setItemAddedChart(itemAddedChart + 1)
@@ -275,7 +315,7 @@ export function CoffesAddedContextProvider({
 
   useEffect(() => {
     const totalPriceOfCoffees = coffeesAddedToAChart.reduce((soma, atual) => {
-      return soma + atual.totalPrice
+      return soma + atual.price * atual.quantity
     }, 0)
 
     const totalItems = coffeesAddedToAChart.reduce((soma, atual) => {
@@ -285,6 +325,7 @@ export function CoffesAddedContextProvider({
     setTotalPriceOfCoffees(totalPriceOfCoffees)
     setTotalItemsAdded(totalItems)
   }, [itemAddedChart, coffeesAddedToAChart])
+
   return (
     <CoffeesAddedContext.Provider
       value={{
@@ -295,6 +336,9 @@ export function CoffesAddedContextProvider({
         handleAddItemToAChart,
         totalPriceOfCoffees,
         totalItemsAdded,
+        handleAddACoffeeInCheckoutpage,
+        handleSubtractACoffeeInCheckoutpage,
+        removeACoffeInCheckoutPage,
       }}
     >
       {children}

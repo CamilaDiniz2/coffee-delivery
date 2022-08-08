@@ -6,10 +6,13 @@ export const CheckoutContainer = styled.div`
 
   form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 400px;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1rem;
     gap: 2rem;
 
-    @media (max-width: 968px) {
+    @media (max-width: 1024px) {
       display: flex;
       flex-direction: column;
     }
@@ -21,6 +24,12 @@ export const CheckoutContainer = styled.div`
       line-height: 130%;
       margin-bottom: 1rem;
     }
+  }
+`
+
+export const FormContainerBox = styled.div`
+  @media (max-width: 1024px) {
+    width: 100%;
   }
 `
 const BaseContainer = styled.div`
@@ -118,7 +127,11 @@ export const FormaOfPaymentMethods = styled.div`
   justify-content: space-between;
   margin-bottom: 16px;
 `
-export const CoffeesSelected = styled.div``
+export const CoffeesSelected = styled.div`
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
+`
 
 export const ButtonConfirm = styled.button`
   width: 100%;
@@ -134,9 +147,10 @@ export const ButtonConfirm = styled.button`
   text-transform: uppercase;
   cursor: pointer;
 
-  @media (max-width: 968px) {
-    margin: 0 auto;
+  @media (max-width: 1024px) {
+    margin: 0 0 0 auto;
     padding: 18px;
+    margin-top: 2rem;
   }
 
   &:hover {

@@ -3,6 +3,7 @@ import { CurrencyDollar, MapPinLine } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import {
   CheckoutContainer,
+  FormContainerBox,
   CoffeesSelected,
   CoffeesSelectedContainer,
   FormContainer,
@@ -58,7 +59,8 @@ interface CepFindApiProps {
 export const FormDataContext = createContext({} as FormDataContextType) */
 
 export function Checkout() {
-  const { coffeesAddedToAChart } = useContext(CoffeesAddedContext)
+  const { coffeesAddedToAChart, totalItemsAdded } =
+    useContext(CoffeesAddedContext)
   const { register, handleSubmit, setFocus, setValue } = useForm({
     resolver: zodResolver(newFormCheckoutSchema),
   })
@@ -144,7 +146,7 @@ export function Checkout() {
   return (
     <CheckoutContainer>
       <form onSubmit={handleSubmit(handleInformCompletAddress)} action="">
-        <div>
+        <FormContainerBox>
           <h1>Complete seu pedido</h1>
           <FormContainer>
             <BaseBoxTitle>
@@ -273,7 +275,7 @@ export function Checkout() {
               </Alert>
             )}
           </PaymentMethod>
-        </div>
+        </FormContainerBox>
 
         <CoffeesSelected>
           <h1>Cafés selecionados</h1>
@@ -282,6 +284,7 @@ export function Checkout() {
               return (
                 <CoffeeSelectedItem
                   key={coffee.id}
+                  id={coffee.id}
                   name={coffee.name}
                   quantity={coffee.quantity}
                   price={coffee.price}
@@ -292,7 +295,9 @@ export function Checkout() {
 
             <TotalItemsSelectedInfo />
 
-            <ButtonConfirm type="submit">confirmar pedido</ButtonConfirm>
+            <ButtonConfirm type="submit" disabled={totalItemsAdded === 0}>
+              confirmar pedido
+            </ButtonConfirm>
           </CoffeesSelectedContainer>
         </CoffeesSelected>
       </form>
