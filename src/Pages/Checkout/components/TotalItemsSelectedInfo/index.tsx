@@ -1,9 +1,14 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Container } from './styles'
 import { CoffeesAddedContext } from '../../../../contexts/CoffeesAddedContext'
 
-export function TotalItemsSelectedInfo() {
+interface CepProps {
+  cep: number
+}
+
+export function TotalItemsSelectedInfo({ cep }: CepProps) {
   const { totalPriceOfCoffees } = useContext(CoffeesAddedContext)
+  
 
   return (
     <Container>

@@ -1,4 +1,10 @@
-import { ChangeEvent, useContext, useState, createContext } from 'react'
+import {
+  ChangeEvent,
+  useContext,
+  useState,
+  createContext,
+  useEffect,
+} from 'react'
 import { CurrencyDollar, MapPinLine, Timer } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import {
@@ -18,10 +24,10 @@ import {
   SuccessDeliveryInfo,
   SuccessIcons,
   SucessDeliveryContent,
+  TotalItemsSelectedInfo,
 } from './styles'
 import { MethodOfPayment } from './components/MethodOfPayment'
 import { CoffeeSelectedItem } from './components/CoffeeSelectedItem'
-import { TotalItemsSelectedInfo } from './components/TotalItemsSelectedInfo'
 import { Alert, AlertTitle } from '@mui/material'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
@@ -63,7 +69,7 @@ interface FormDataContextType {
 export const FormDataContext = createContext({} as FormDataContextType)
 
 export function Checkout() {
-  const { coffeesAddedToAChart, totalItemsAdded } =
+  const { coffeesAddedToAChart, totalItemsAdded, totalPriceOfCoffees } =
     useContext(CoffeesAddedContext)
   const { register, handleSubmit, setFocus, setValue } = useForm({
     resolver: zodResolver(newFormCheckoutSchema),
@@ -79,6 +85,22 @@ export function Checkout() {
   const [cepApiData, setCepApiData] = useState<CepFindApiProps>([])
   const [formData, setFormData] = useState<FormDataProps>([])
   const [isFormCompleted, setIsFormCompleted] = useState<boolean>(false)
+
+  const [priceOfDelivery, setPriceOfDelivery] = useState<number>(1.5)
+
+  useEffect(() => {
+    if (cepApiData.cep !== undefined) {
+      setPriceOfDelivery(
+        Math.abs(
+          parseInt(cepApiData.cep.replace(/\D/g, '').slice(2, 8)) - 293160,
+        ) *
+          0.01 +
+          1.5,
+      )
+    }
+  }, [cepApiData.cep])
+
+  console.log(priceOfDelivery)
 
   function handleCEP(event: ChangeEvent<HTMLTextAreaElement>) {
     const newCEP = event.target.value.replace(/\D/g, '')
@@ -332,7 +354,22 @@ export function Checkout() {
                 )
               })}
 
-              <TotalItemsSelectedInfo />
+              <TotalItemsSelectedInfo>
+                <div>
+                  <span>Total de itens</span>
+                  <p>R$ {totalPriceOfCoffees.toFixed(2)}</p>
+                </div>
+                <div>
+                  <span>Entrega</span>
+                  <p>R$ {priceOfDelivery.toFixed(2)}</p>
+                </div>
+                <div>
+                  <strong>Total</strong>
+                  <strong>
+                    R$ {(totalPriceOfCoffees + priceOfDelivery).toFixed(2)}
+                  </strong>
+                </div>
+              </TotalItemsSelectedInfo>
 
               <ButtonConfirm type="submit" disabled={totalItemsAdded === 0}>
                 confirmar pedido
