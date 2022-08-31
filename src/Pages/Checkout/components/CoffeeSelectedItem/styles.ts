@@ -71,6 +71,7 @@ export const baseButton = styled.button`
   &:disabled {
     background-color: ${({ theme }) => theme['gray-400']};
     cursor: not-allowed;
+    opacity: 0.3;
   }
 `
 

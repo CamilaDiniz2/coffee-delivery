@@ -1,5 +1,5 @@
 import { ChangeEvent, useContext, useState, createContext } from 'react'
-import { CurrencyDollar, MapPinLine } from 'phosphor-react'
+import { CurrencyDollar, MapPinLine, Timer } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import {
   CheckoutContainer,
@@ -14,6 +14,10 @@ import {
   FormSelectCityAndState,
   FormaOfPaymentMethods,
   ButtonConfirm,
+  SuccessDeliveryContainer,
+  SuccessDeliveryInfo,
+  SuccessIcons,
+  SucessDeliveryContent,
 } from './styles'
 import { MethodOfPayment } from './components/MethodOfPayment'
 import { CoffeeSelectedItem } from './components/CoffeeSelectedItem'
@@ -22,7 +26,7 @@ import { Alert, AlertTitle } from '@mui/material'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 import { CoffeesAddedContext } from '../../contexts/CoffeesAddedContext'
-import { Redirect } from 'react-router-dom'
+import successDeliveryImage from '../../assets/success-delivery.svg'
 
 const newFormCheckoutSchema = zod.object({
   cep: zod.string().length(8, 'CEP deve ter 8 caracteres'),
@@ -52,11 +56,11 @@ interface CepFindApiProps {
   uf: string
 }
 
-/* interface FormDataContextType {
+interface FormDataContextType {
   formData: FormDataProps
 }
 
-export const FormDataContext = createContext({} as FormDataContextType) */
+export const FormDataContext = createContext({} as FormDataContextType)
 
 export function Checkout() {
   const { coffeesAddedToAChart, totalItemsAdded } =
@@ -74,6 +78,7 @@ export function Checkout() {
   const [numberFormatInvalid, setNumberFormatInvalid] = useState<boolean>(false)
   const [cepApiData, setCepApiData] = useState<CepFindApiProps>([])
   const [formData, setFormData] = useState<FormDataProps>([])
+  const [isFormCompleted, setIsFormCompleted] = useState<boolean>(false)
 
   function handleCEP(event: ChangeEvent<HTMLTextAreaElement>) {
     const newCEP = event.target.value.replace(/\D/g, '')
@@ -131,6 +136,7 @@ export function Checkout() {
       methodOfPayment: newMethodOfPayment,
     }
     setFormData(data)
+    setIsFormCompleted(true)
   }
 
   function handleNumberInform(event: ChangeEvent<HTMLInputElement>) {
@@ -141,166 +147,200 @@ export function Checkout() {
       setNumberFormatInvalid(false)
     }
   }
-
-  console.log(formData)
   return (
     <CheckoutContainer>
-      <form onSubmit={handleSubmit(handleInformCompletAddress)} action="">
-        <FormContainerBox>
-          <h1>Complete seu pedido</h1>
-          <FormContainer>
-            <BaseBoxTitle>
-              <MapPinLine size={24} weight="light" color="#C47F17" />
+      {isFormCompleted && (
+        <SuccessDeliveryContainer>
+          <h1>Uhu! Pedido confirmado</h1>
+          <p>Agora é só aguardar que logo o café chegará até você</p>
+          <SucessDeliveryContent>
+            <SuccessDeliveryInfo>
               <div>
-                <strong>Endereço de entrega</strong>
-                <p>Informe o endereço onde deseja receber seu pedido</p>
-              </div>
-            </BaseBoxTitle>
-            <FormContent>
-              <input
-                type="text"
-                id="cep"
-                placeholder="CEP"
-                {...register('cep')}
-                onBlur={handleCEP}
-                required
-              />
+                <SuccessIcons successIconsBackgroundColors="purpleDark">
+                  <MapPinLine size={16} weight="fill" />
+                </SuccessIcons>
 
-              {isCepNotFound && (
+                <strong>
+                  Entrega em {formData.street}, {formData.number}{' '}
+                  {formData.neighborhood} - {formData.city}, {formData.uf}
+                </strong>
+              </div>
+              <div>
+                <SuccessIcons successIconsBackgroundColors="yellow">
+                  <Timer size={16} weight="fill" />
+                </SuccessIcons>
+                <strong>Previsão de entrega 20 min - 30 min</strong>
+              </div>
+              <div>
+                <SuccessIcons successIconsBackgroundColors="yellowDark">
+                  <CurrencyDollar size={16} weight="fill" />
+                </SuccessIcons>
+                <strong>Pagamento na entrega Cartão de Crédito</strong>
+              </div>
+            </SuccessDeliveryInfo>
+            <img src={successDeliveryImage} />
+          </SucessDeliveryContent>
+        </SuccessDeliveryContainer>
+      )}
+
+      {!isFormCompleted && (
+        <form onSubmit={handleSubmit(handleInformCompletAddress)}>
+          <FormContainerBox>
+            <h1>Complete seu pedido</h1>
+            <FormContainer>
+              <BaseBoxTitle>
+                <MapPinLine size={24} weight="light" color="#C47F17" />
+                <div>
+                  <strong>Endereço de entrega</strong>
+                  <p>Informe o endereço onde deseja receber seu pedido</p>
+                </div>
+              </BaseBoxTitle>
+              <FormContent>
+                <input
+                  type="text"
+                  id="cep"
+                  placeholder="CEP"
+                  {...register('cep')}
+                  onBlur={handleCEP}
+                  required
+                />
+
+                {isCepNotFound && (
+                  <Alert severity="error">
+                    <AlertTitle>CEP não encontrado</AlertTitle>
+                    <strong>{errorMessage} </strong>
+                    <strong>Por favor digite um CEP válido</strong>
+                  </Alert>
+                )}
+                <input
+                  type="text"
+                  id="street"
+                  placeholder="Rua"
+                  {...register('street')}
+                  disabled
+                  required
+                />
+                <FormSelectCityAndState>
+                  <input
+                    type="text"
+                    id="neighborhood"
+                    placeholder="Bairro"
+                    {...register('neighborhood')}
+                    disabled
+                    required
+                  />
+
+                  <input
+                    type="text"
+                    id="city"
+                    placeholder="Cidade"
+                    {...register('city')}
+                    disabled
+                    required
+                  />
+
+                  <input
+                    type="text"
+                    id="uf"
+                    placeholder="UF"
+                    {...register('uf')}
+                    disabled
+                    required
+                  />
+                </FormSelectCityAndState>
+
+                <FormNumberAndComplement>
+                  <input
+                    type="number"
+                    id="number"
+                    placeholder="Numero"
+                    {...register('number', { valueAsNumber: true })}
+                    onBlur={handleNumberInform}
+                    required
+                  />
+
+                  <input
+                    type="text"
+                    id="complement"
+                    placeholder="Complemento (opcional)"
+                    {...register('complement')}
+                  />
+                </FormNumberAndComplement>
+                {numberFormatInvalid && (
+                  <Alert severity="error">
+                    <AlertTitle>Número não válido</AlertTitle>
+                    <strong>Você deve digitar um número maior que 0</strong>
+                  </Alert>
+                )}
+              </FormContent>
+            </FormContainer>
+            <PaymentMethod>
+              <BaseBoxTitle>
+                <CurrencyDollar size={24} color="#8047F8" />
+                <div>
+                  <strong>Pagamento</strong>
+                  <p>
+                    O pagamento é feito na entrega. Escolha a forma que deseja
+                    pagar
+                  </p>
+                </div>
+              </BaseBoxTitle>
+              <FormaOfPaymentMethods>
+                <MethodOfPayment
+                  title="cartão de crédito"
+                  type="cartao-credito"
+                  value="cartao-credito"
+                  onClick={() => handleSelectMehodOfPayment('cartao-credito')}
+                  isSelected={newMethodOfPayment === 'cartao-credito'}
+                />
+                <MethodOfPayment
+                  title="cartão de débito"
+                  type="cartao-debito"
+                  onClick={() => handleSelectMehodOfPayment('cartao-debito')}
+                  isSelected={newMethodOfPayment === 'cartao-debito'}
+                />
+                <MethodOfPayment
+                  title="dinheiro"
+                  type="dinheiro"
+                  onClick={() => handleSelectMehodOfPayment('dinheiro')}
+                  isSelected={newMethodOfPayment === 'dinheiro'}
+                />
+              </FormaOfPaymentMethods>
+
+              {methodOfPaymentNotInformed === true && (
                 <Alert severity="error">
-                  <AlertTitle>CEP não encontrado</AlertTitle>
-                  <strong>{errorMessage} </strong>
-                  <strong>Por favor digite um CEP válido</strong>
+                  <AlertTitle>Forma de pagamento nao selcionada</AlertTitle>
+                  <strong>Selecione a forma de pagamento para comtinuar</strong>
                 </Alert>
               )}
-              <input
-                type="text"
-                id="street"
-                placeholder="Rua"
-                {...register('street')}
-                disabled
-                required
-              />
-              <FormSelectCityAndState>
-                <input
-                  type="text"
-                  id="neighborhood"
-                  placeholder="Bairro"
-                  {...register('neighborhood')}
-                  disabled
-                  required
-                />
+            </PaymentMethod>
+          </FormContainerBox>
 
-                <input
-                  type="text"
-                  id="city"
-                  placeholder="Cidade"
-                  {...register('city')}
-                  disabled
-                  required
-                />
+          <CoffeesSelected>
+            <h1>Cafés selecionados</h1>
+            <CoffeesSelectedContainer>
+              {coffeesAddedToAChart.map((coffee) => {
+                return (
+                  <CoffeeSelectedItem
+                    key={coffee.id}
+                    id={coffee.id}
+                    name={coffee.name}
+                    quantity={coffee.quantity}
+                    price={coffee.price}
+                    imgScr={coffee.imgSrc}
+                  />
+                )
+              })}
 
-                <input
-                  type="text"
-                  id="uf"
-                  placeholder="UF"
-                  {...register('uf')}
-                  disabled
-                  required
-                />
-              </FormSelectCityAndState>
+              <TotalItemsSelectedInfo />
 
-              <FormNumberAndComplement>
-                <input
-                  type="number"
-                  id="number"
-                  placeholder="Numero"
-                  {...register('number', { valueAsNumber: true })}
-                  onBlur={handleNumberInform}
-                  required
-                />
-
-                <input
-                  type="text"
-                  id="complement"
-                  placeholder="Complemento (opcional)"
-                  {...register('complement')}
-                />
-              </FormNumberAndComplement>
-              {numberFormatInvalid && (
-                <Alert severity="error">
-                  <AlertTitle>Número não válido</AlertTitle>
-                  <strong>Você deve digitar um número maior que 0</strong>
-                </Alert>
-              )}
-            </FormContent>
-          </FormContainer>
-          <PaymentMethod>
-            <BaseBoxTitle>
-              <CurrencyDollar size={24} color="#8047F8" />
-              <div>
-                <strong>Pagamento</strong>
-                <p>
-                  O pagamento é feito na entrega. Escolha a forma que deseja
-                  pagar
-                </p>
-              </div>
-            </BaseBoxTitle>
-            <FormaOfPaymentMethods>
-              <MethodOfPayment
-                title="cartão de crédito"
-                type="cartao-credito"
-                value="cartao-credito"
-                onClick={() => handleSelectMehodOfPayment('cartao-credito')}
-                isSelected={newMethodOfPayment === 'cartao-credito'}
-              />
-              <MethodOfPayment
-                title="cartão de débito"
-                type="cartao-debito"
-                onClick={() => handleSelectMehodOfPayment('cartao-debito')}
-                isSelected={newMethodOfPayment === 'cartao-debito'}
-              />
-              <MethodOfPayment
-                title="dinheiro"
-                type="dinheiro"
-                onClick={() => handleSelectMehodOfPayment('dinheiro')}
-                isSelected={newMethodOfPayment === 'dinheiro'}
-              />
-            </FormaOfPaymentMethods>
-
-            {methodOfPaymentNotInformed === true && (
-              <Alert severity="error">
-                <AlertTitle>Forma de pagamento nao selcionada</AlertTitle>
-                <strong>Selecione a forma de pagamento para comtinuar</strong>
-              </Alert>
-            )}
-          </PaymentMethod>
-        </FormContainerBox>
-
-        <CoffeesSelected>
-          <h1>Cafés selecionados</h1>
-          <CoffeesSelectedContainer>
-            {coffeesAddedToAChart.map((coffee) => {
-              return (
-                <CoffeeSelectedItem
-                  key={coffee.id}
-                  id={coffee.id}
-                  name={coffee.name}
-                  quantity={coffee.quantity}
-                  price={coffee.price}
-                  imgScr={coffee.imgSrc}
-                />
-              )
-            })}
-
-            <TotalItemsSelectedInfo />
-
-            <ButtonConfirm type="submit" disabled={totalItemsAdded === 0}>
-              confirmar pedido
-            </ButtonConfirm>
-          </CoffeesSelectedContainer>
-        </CoffeesSelected>
-      </form>
+              <ButtonConfirm type="submit" disabled={totalItemsAdded === 0}>
+                confirmar pedido
+              </ButtonConfirm>
+            </CoffeesSelectedContainer>
+          </CoffeesSelected>
+        </form>
+      )}
     </CheckoutContainer>
   )
 }
